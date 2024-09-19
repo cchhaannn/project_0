@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="kor" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/css/reset.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400..800&family=Dosis:wght@200..800&family=Gruppo&display=swap" rel="stylesheet">
+    <title>Pasta</title>
+</head>
+<body>
+<div class="container">
+    <div class="title-container">
+        <p class="title">Pasta</p>
+        <br/>
+        with
+    </div>
+    <div class="logo-container">
+        <img id="spotify-logo-img" src="/img/spotify_logo.png" alt="spotify_logo">
+        <img id="spotify-logo-img-2" src="/img/spotify_logo_2.png" alt="spotify_logo_2">
+    </div>
+    <form class="login-container active">
+        <input type="text" name="id" placeholder="Iid">
+        <input type="password" name="password" placeholder="Password">
+        <input type="submit" value="Sign in" />
+        <div class="signup-prompt">
+            <p>If you don't have an account, <a href="/signup" class="signup-link">Sign up here</a></p>
+        </div>
+    </form>
+    <form class="logout-container">
+        <input type="submit" value="Sign out" />
+    </form>
+</div>
+</body>
+</html>
+<style>
+    body, html {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f9f9f9;
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        text-align: center;
+        width: 320px;
+        padding: 40px 20px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .title-container {
+        margin-bottom: 20px;
+        font-size: 18px;
+        background: linear-gradient(90deg, #f06a6a, #1DB954);
+        -webkit-background-clip: text;
+        color: transparent;
+        font-weight: 700;
+        font-family: "Dosis", sans-serif;
+    }
+
+    .title-container .title {
+        font-size: 36px;
+        font-weight: 700;
+        margin: 0;
+        font-family: "Orbitron", sans-serif;
+        background: linear-gradient(90deg, #e63946, #f06a6a);
+        -webkit-background-clip: text;
+        color: transparent;
+    }
+
+    .logo-container {
+        position: relative;
+        width: 150px;
+        margin: 0 auto 10px auto;
+        height: 100px;
+    }
+
+    #spotify-logo-img, #spotify-logo-img-2 {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 150px;
+    }
+
+    #spotify-logo-img-2 {
+        visibility: hidden;
+    }
+
+    input[type="text"], input[type="password"] {
+        width: 100%;
+        padding: 15px;
+        margin: 15px 0;
+        box-sizing: border-box;
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus, input[type="password"]:focus {
+        border-color: #1DB954;
+        outline: none;
+    }
+
+    input[type="submit"] {
+        width: 100%;
+        padding: 15px;
+        margin: 20px 0 10px 0;
+        background-color: #1DB954;
+        border: none;
+        color: white;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #17a74a;
+    }
+
+    .logout-container input[type="submit"] {
+        background-color: #d32f2f;
+    }
+
+    .logout-container input[type="submit"]:hover {
+        background-color: #b71c1c;
+    }
+
+    .login-container, .logout-container {
+        display: none;
+    }
+
+    .login-container.active, .logout-container.active {
+        display: block;
+    }
+
+    .signup-prompt {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #333;
+    }
+
+    .signup-link {
+        display: inline-block;
+        color: #1DB954;
+        font-weight: bold;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .signup-link:hover {
+        color: #17a74a;
+        text-decoration: underline;
+    }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const loginForm = document.querySelector('.login-container');
+        const logoutForm = document.querySelector('.logout-container');
+        const logoImg = document.getElementById('spotify-logo-img');
+        const logoImg2 = document.getElementById('spotify-logo-img-2');
+        const titleContainer = document.querySelector('.title-container');
+
+        logoImg2.style.visibility = 'hidden';
+
+        // Login form submit
+        loginForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const formData = new FormData(loginForm);
+
+            fetch('/member/login', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.text())
+                .then(data => {
+                    console.log(data);    // Debug
+                    loginForm.classList.remove('active');
+                    logoutForm.classList.add('active');
+                    logoImg.style.visibility = 'hidden';
+                    logoImg2.style.visibility = 'visible';
+                    titleContainer.innerHTML = '<p class="title">Pasta</p>';
+                }).catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        // Logout form submit
+        logoutForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            fetch('/member/logout', {
+                method: 'POST',
+            }).then(response => response.text())
+                .then(data => {
+                    console.log(data);    // Debug
+                    logoutForm.classList.remove('active');
+                    loginForm.classList.add('active');
+                    logoImg2.style.visibility = 'hidden';
+                    logoImg.style.visibility = 'visible';
+                    titleContainer.innerHTML = '<p class="title">Pasta</p><br/>with';
+                }).catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+</script>
